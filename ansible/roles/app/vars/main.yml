@@ -1,0 +1,4 @@
+---
+node_service_repo: "https://github.com/hoangzuyss2412/cicd-node-service.git"
+node_service_path: "/home/ubuntu/app"
+node_version: 18

@@ -1,0 +1,79 @@
+---
+- name: Install the gpg key for nodejs LTS
+  apt_key:
+    url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+    state: present
+
+- name: Install the nodejs LTS repos
+  apt_repository:
+    repo: "deb https://deb.nodesource.com/node_{{ node_version }}.x focal main"
+    state: present
+    update_cache: yes
+    filename: nodesource
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Ensure Node.js and npm is installed
+  apt:
+    name: 
+    - nodejs
+    - npm
+    state: present
+    update-cache: yes
+
+- name: Create app directory
+  file: 
+    path: "{{ node_service_path }}"
+    state: directory
+
+- name: Clone/Update the application repository
+  git:
+    repo: "{{ node_service_repo }}"
+    dest: "{{ node_service_path }}"
+    update: yes  # Ensure the repo is updated if it already exists
+    force: yes
+
+- name: Ensure root owns the app directory for npm
+  file:
+    path: "{{ node_service_path }}/node-service"
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: '0755'
+    recurse: yes
+
+
+- name: Install application dependencies (manually as npm module does not seem to work)
+  command: npm install
+  args:
+    chdir: "{{ node_service_path }}/node-service"
+
+# Add a systemd service for the Node.js application
+- name: Create systemd service file for the Node.js app
+  copy: 
+    dest: /etc/systemd/system/startnode.service
+    content: |
+      [Unit]
+      Description=Node service
+      After=network.target
+      
+      [Service]
+      ExecStart=sudo /usr/bin/node {{ node_service_path }}/node-service/src/app.js
+      Restart=always
+      User=ubuntu
+      Group=ubuntu
+      WorkingDirectory={{ node_service_path }}/node-service
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Reload systemd to apply new service
+  command: systemctl daemon-reload
+
+- name: Enable the service to start on boot
+  service:
+    name: startnode
+    state: started
+    enabled: yes

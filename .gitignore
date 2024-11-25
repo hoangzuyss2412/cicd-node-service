@@ -7,3 +7,9 @@
 
 # Terraform lock files (some teams include this, but generally better to commit it)
 # .terraform.lock.hcl
+
+# Ignore environment variables
+.env
+
+# Ignore node_modules
+node_modules/

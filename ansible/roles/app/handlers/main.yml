@@ -1,0 +1,9 @@
+---
+- name: Reload systemd
+  command: systemctl daemon-reload
+
+- name: Restart node service
+  service:
+    name: startnode
+    state: restarted
+    enabled: yes

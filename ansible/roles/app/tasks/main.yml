@@ -49,6 +49,8 @@
   command: npm install
   args:
     chdir: "{{ node_service_path }}/node-service"
+  notify:
+    - Restart node service
 
 # Add a systemd service for the Node.js application
 - name: Create systemd service file for the Node.js app
@@ -58,7 +60,7 @@
       [Unit]
       Description=Node service
       After=network.target
-      
+
       [Service]
       ExecStart=sudo /usr/bin/node {{ node_service_path }}/node-service/src/app.js
       Restart=always
@@ -69,11 +71,6 @@
       [Install]
       WantedBy=multi-user.target
 
-- name: Reload systemd to apply new service
-  command: systemctl daemon-reload
-
-- name: Enable the service to start on boot
-  service:
-    name: startnode
-    state: started
-    enabled: yes
+  notify:
+    - Reload systemd
+    - Restart node service

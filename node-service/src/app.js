@@ -9,6 +9,13 @@ app.use(express.json());
 
 // HTML endpoint
 app.get('/', (req, res) => {
+   // Get Sydney time explicitly
+   const sydneyTime = new Intl.DateTimeFormat('en-AU', {
+    dateStyle: 'medium',
+    timeStyle: 'long',
+    timeZone: 'Australia/Sydney'
+  }).format(new Date());
+  
   res.send(`
     <!DOCTYPE html>
     <html lang="en">
@@ -31,7 +38,7 @@ app.get('/', (req, res) => {
         <h1>Welcome to the Node.js App!</h1>
         <h2> This app is deployed using Github Action and Ansible </h2>
         <p>Check out the <a href="/api/greet?name=YourName">Greet API</a>.</p>
-        <p>Deployed on: ${new Date().toLocaleString()}</p>
+        <p>Deployed on: ${sydneyTime}</p>
     </body>
     </html>
   `);

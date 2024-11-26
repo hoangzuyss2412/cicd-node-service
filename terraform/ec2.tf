@@ -15,3 +15,9 @@ resource "aws_instance" "node_app" {
         "purpose"      = "practical"
     }
 }
+
+# Always make sure the instance of node service is running
+resource "aws_ec2_instance_state" "node_app_state" {
+    instance_id = aws_instance.node_app.id
+    state = "running"
+}

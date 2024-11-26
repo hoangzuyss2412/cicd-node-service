@@ -9,25 +9,11 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    container: 
+      image: alpine/ansible:latest
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-
-      - name: Cache Ansible
-        uses: actions/cache@v3
-        with: 
-          path: /usr/bin/ansible  # Path to the Ansible binary
-          key: ansible-cache-ubuntu-${{ runner.os }}-${{ hashFiles('ansible/requirements.txt') }}
-          restore-keys: |
-            ansible-cache-ubuntu-${{ runner.os }}-
-
-      - name: Install Ansible (if not already cached)
-        run: |
-          if ! command ansible -v > /dev/null; then
-            sudo apt update
-            sudo apt install -y ansible
-          fi
 
       - name: Create SSH key file
         run: |

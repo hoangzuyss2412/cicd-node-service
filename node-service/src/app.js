@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
     </head>
     <body>
         <h1>Welcome to the Node.js App!</h1>
-        <h2> This app is deployed using Github Action and Ansible </h2>
+        <h2> This app is deployed on AWS EC2 using Github Action and Ansible </h2>
         <p>Check out the <a href="/api/greet?name=YourName">Greet API</a>.</p>
         <p>Deployed on: ${sydneyTime}</p>
     </body>

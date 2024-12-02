@@ -1,0 +1,28 @@
+---
+- name: Play around with cron module in Ansible 
+  hosts: test_vm 
+  tasks: 
+    - name: Create cron folder
+      file: 
+        path: /home/ubuntu/cron
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: '0755'
+
+    - name: Create a script for cron job on remote test VM
+      copy: 
+        content: |
+          #!/bin/bash
+          date >> /home/ubuntu/cron/script_output.log
+          echo "Cron job ran at $(date)" >> /home/ubuntu/cron/script_output.log
+        dest: /home/ubuntu/cron/script.sh 
+        owner: ubuntu
+        group: ubuntu
+        mode: '0755'
+
+    - name: Create a simple cron job
+      cron: 
+        name: "my cron job"
+        job: /home/ubuntu/cron/script.sh
+        minute: "*/1"

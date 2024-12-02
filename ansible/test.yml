@@ -1,0 +1,10 @@
+---
+- name: Play around with some built-in modules in Ansible
+  hosts: 
+    - test_vm
+  tasks:
+    - name: Download a file from a URL
+      get_url:
+        url: "https://releases.ansible.com/ansible/ansible-2.9.25.tar.gz"
+        dest: "/tmp/ansible-2.9.25.tar.gz"
+        checksum: "sha256:https://releases.ansible.com/ansible/ansible-2.9.25.tar.gz.sha"
